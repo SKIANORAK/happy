@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С Днем Рождения!</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: #000;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background 1s ease;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* Первая черная кнопка */
+    #openButton {
+      padding: 25px 60px;
+      background: black;
+      color: white;
+      border: 3px solid #ff3366;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px auto;
+      display: block;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px rgba(255, 51, 102, 0.3);
+      letter-spacing: 2px;
+      position: relative;
+      z-index: 10;
+    }
+
+    #openButton:hover {
+      background: #ff3366;
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 51, 102, 0.5);
+    }
+
+    /* Главный заголовок растянутый */
+    .main-title {
+      font-size: clamp(3rem, 10vw, 7rem);
+      background: linear-gradient(45deg, #ff3366, #ff0066, #ff6699, #ff0066);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 900;
+      margin-bottom: 60px;
+      text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      line-height: 1;
+      padding: 0 20px;
+      letter-spacing: 2px;
+      transform: scale(0.9);
+      opacity: 0;
+      transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .main-title.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Вторая кнопка */
+    #secretButton {
+      padding: 25px 60px;
+      background: linear-gradient(45deg, #ff3366, #ff0066);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: bold;
+      margin-top: 40px;
+      display: none;
+      box-shadow: 0 15px 30px rgba(255, 0, 102, 0.4);
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 2;
+      transform: translateY(50px);
+      opacity: 0;
+    }
+
+    #secretButton.show {
+      display: inline-block;
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #secretButton:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(255, 0, 102, 0.6);
+      background: linear-gradient(45deg, #ff0066, #ff3366);
+    }
+
+    /* Секретная табличка */
+    .secret-message {
+      display: none;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.95));
+      padding: 60px 50px;
+      border-radius: 30px;
+      margin: 50px auto;
+      max-width: 800px;
+      box-shadow: 0 25px 50px rgba(255, 0, 102, 0.25),
+                  0 0 0 3px #ff3366,
+                  0 0 0 8px rgba(255, 51, 102, 0.2),
+                  inset 0 0 20px rgba(255, 255, 255, 0.5);
+      border: none;
+      position: relative;
+      opacity: 0;
+      transform: scale(0.8) translateY(50px);
+      transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2;
+    }
+
+    .secret-message::before {
+      content: '';
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      right: -15px;
+      bottom: -15px;
+      background: linear-gradient(45deg, #ff3366, #ff0066, #ff6699);
+      border-radius: 40px;
+      z-index: -1;
+      opacity: 0.2;
+      filter: blur(10px);
+    }
+
+    .secret-message::after {
+      content: '💝';
+      position: absolute;
+      top: -50px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 80px;
+      z-index: 3;
+      text-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0px); }
+      50% { transform: translateX(-50%) translateY(-20px); }
+    }
+
+    .secret-message.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .secret-message h2 {
+      color: #ff3366;
+      font-size: 3rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .secret-message h2::after {
+      content: '';
+      display: block;
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(to right, #ff3366, #ff6699);
+      margin: 15px auto;
+      border-radius: 2px;
+    }
+
+    .secret-message p {
+      font-size: 1.8rem;
+      color: #333;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Фоновые сердечки */
+    .bg-heart {
+      position: fixed;
+      font-size: 40px;
+      color: rgba(255, 51, 102, 0.2);
+      pointer-events: none;
+      z-index: 1;
+      animation: floatUp 15s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.4;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Анимационные сердечки при клике */
+    .heart {
+      position: fixed;
+      font-size: 35px;
+      pointer-events: none;
+      z-index: 1000;
+      animation: heartExplode 2s ease-out forwards;
+    }
+
+    @keyframes heartExplode {
+      0% {
+        transform: translate(0, 0) scale(0) rotate(0deg);
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(1) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Блестки */
+    .sparkle {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1001;
+      animation: sparkle 1.5s ease-out forwards;
+      box-shadow: 0 0 15px #ff3366, 0 0 30px #ff3366;
+    }
+
+    @keyframes sparkle {
+      0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      #openButton {
+        padding: 20px 40px;
+        font-size: 24px;
+      }
+      
+      .main-title {
+        font-size: clamp(2.5rem, 8vw, 5rem);
+        margin-bottom: 40px;
+      }
+      
+      .secret-message {
+        padding: 40px 25px;
+        margin: 30px 20px;
+      }
+      
+      .secret-message h2 {
+        font-size: 2.2rem;
+      }
+      
+      .secret-message p {
+        font-size: 1.4rem;
+      }
+      
+      #secretButton {
+        padding: 20px 40px;
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-title {
+        font-size: clamp(2rem, 7vw, 3.5rem);
+      }
+      
+      .secret-message::after {
+        font-size: 60px;
+        top: -40px;
+      }
+      
+      body {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Первая кнопка -->
+    <button id="openButton">ОТКРОЙ!</button>
+    
+    <!-- Главный заголовок -->
+    <h1 class="main-title" id="mainTitle">С Днем Рождения, Настюша! ❤️</h1>
+    
+    <!-- Вторая кнопка -->
+    <button id="secretButton">Открыть секретное послание... ✨</button>
+    
+    <!-- Секретная табличка -->
+    <div class="secret-message" id="secretMessage">
+      <h2>Спасибо, что ты есть! 💖</h2>
+      <p>Я очень счастлив именно с тобой.</p>
+      <p>Ты делаешь мою жизнь ярче,</p>
+      <p>теплее и прекраснее с каждым днем.</p>
+      <p>Я ценю каждую минуту, проведенную вместе,</p>
+      <p>и благодарен судьбе за нашу встречу! 🌟</p>
+    </div>
+  </div>
+
+  <script>
+    const openButton = document.getElementById('openButton');
+    const mainTitle = document.getElementById('mainTitle');
+    const secretButton = document.getElementById('secretButton');
+    const secretMessage = document.getElementById('secretMessage');
+    const body = document.body;
+
+    // Создание фоновых сердечек
+    function createBackgroundHearts() {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'bg-heart';
+          heart.innerHTML = '❤️';
+          heart.style.left = Math.random() * 100 + 'vw';
+          heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+          heart.style.color = `rgba(255, ${Math.random() * 50 + 50}, ${Math.random() * 100 + 100}, ${Math.random() * 0.2 + 0.1})`;
+          heart.style.animationDelay = Math.random() * 10 + 's';
+          heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+          document.body.appendChild(heart);
+        }, i * 500);
+      }
+    }
+
+    // Создание взрыва сердечек
+    function createHeartExplosion(x, y, count = 30) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const heart = document.createElement('div');
+          heart.className = 'heart';
+          heart.innerHTML = '❤️';
+          heart.style.left = x + 'px';
+          heart.style.top = y + 'px';
+          heart.style.color = `hsl(${Math.random() * 60 + 300}, 100%, 65%)`;
+          heart.style.setProperty('--tx', (Math.random() - 0.5) * 400 + 'px');
+          heart.style.setProperty('--ty', (Math.random() - 0.5) * 400 + 'px');
+          
+          document.body.appendChild(heart);
+          
+          setTimeout(() => {
+            heart.remove();
+          }, 2000);
+        }, i * 30);
+      }
+    }
+
+    // Создание блесток
+    function createSparkles(x, y, count = 50) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const sparkle = document.createElement('div');
+          sparkle.className = 'sparkle';
+          sparkle.style.left = x + 'px';
+          sparkle.style.top = y + 'px';
+          sparkle.style.setProperty('--tx', (Math.random() - 0.5) * 300 + 'px');
+          sparkle.style.setProperty('--ty', (Math.random() - 0.5) * 300 + 'px');
+          
+          document.body.appendChild(sparkle);
+          
+          setTimeout(() => {
+            sparkle.remove();
+          }, 1500);
+        }, i * 20);
+      }
+    }
+
+    // Обработчик клика на первую кнопку
+    openButton.addEventListener('click', function(e) {
+      const buttonRect = e.target.getBoundingClientRect();
+      const x = buttonRect.left + buttonRect.width / 2;
+      const y = buttonRect.top + buttonRect.height / 2;
+      
+      // Анимация кнопки
+      openButton.style.animation = 'none';
+      setTimeout(() => {
+        openButton.style.transition = 'all 0.5s ease';
+        openButton.style.transform = 'scale(0)';
+        openButton.style.opacity = '0';
+      }, 100);
+      
+      // Взрыв сердечек
+      createHeartExplosion(x, y, 20);
+      createSparkles(x, y, 30);
+      
+      // Меняем фон
+      setTimeout(() => {
+        body.style.background = 'linear-gradient(135deg, #ffafbd, #ffc3a0, #ffafbd)';
+        openButton.style.display = 'none';
+      }, 500);
+      
+      // Показываем заголовок
+      setTimeout(() => {
+        mainTitle.classList.add('show');
+      }, 800);
+      
+      // Показываем вторую кнопку
+      setTimeout(() => {
+        secretButton.classList.add('show');
+      }, 1500);
+      
+      // Запускаем фоновые сердечки
+      createBackgroundHearts();
+    });
+
+    // Обработчик клика на вторую кнопку
+    secretButton.addEventListener('click', function(e) {
+      const buttonRect = e.target.getBoundingClientRect();
+      const x = buttonRect.left + buttonRect.width / 2;
+      const y = buttonRect.top + buttonRect.height / 2;
+      
+      // Анимация кнопки
+      secretButton.style.transition = 'all 0.5s ease';
+      secretButton.style.transform = 'scale(0)';
+      secretButton.style.opacity = '0';
+      
+      // Взрыв сердечек и блесток
+      createHeartExplosion(x, y, 40);
+      createSparkles(x, y, 60);
+      
+      // Показываем секретное сообщение
+      setTimeout(() => {
+        secretButton.style.display = 'none';
+        secretMessage.classList.add('show');
+      }, 800);
+      
+      // Добавляем больше фоновых сердечек
+      setTimeout(() => {
+        for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.className = 'bg-heart';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 40 + 20) + 'px';
+            heart.style.color = `rgba(255, ${Math.random() * 100 + 50}, ${Math.random() * 150 + 50}, 0.3)`;
+            document.body.appendChild(heart);
+          }, i * 100);
+        }
+      }, 1000);
+    });
+
+    // Создаем сердечки при движении мыши
+    document.addEventListener('mousemove', (e) => {
+      if (Math.random() > 0.95 && mainTitle.classList.contains('show')) {
+        createHeartExplosion(e.clientX, e.clientY, 3);
+      }
+    });
+  </script>
+</body>
+</html>
